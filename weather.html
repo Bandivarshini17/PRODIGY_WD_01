@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <style>
+        body {
+    background-image: url('https://www.wallpaperflare.com/static/377/144/986/weather-canon-ef-mm-f-2-wallpaper.jpg');
+    background-size: cover; /* This will make the image cover the entire background */
+    background-repeat: no-repeat; /* This will prevent the image from repeating */
+}
+body {
+    background-image: url('https://www.wallpaperflare.com/static/377/144/986/weather-canon-ef-mm-f-2-wallpaper.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    margin: 0; /* Remove default margin to fill the entire viewport */
+    padding: 0; /* Remove default padding */
+    display: flex; /* Use flexbox for layout */
+    justify-content: right; /* Horizontally center the content */
+    align-items: right;; /* Vertically center the content */
+    height: 100vh; /* Set the body's height to the viewport height */
+}
+
+.container {
+    background-color: none; /* Add a semi-transparent white background to the container */
+    padding: 200px;
+    border-radius: 10px;
+    text-align:center;
+    max-width: 400px; /* Limit the container width for readability */
+}
+
+.search {
+    margin-top: 20px; /* Add some space between the container and search elements */
+}
+
+/* Add your other CSS styles here */
+
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Weather App</h1>
+        <div class="search">
+            <input type="text" id="locationInput" placeholder="Enter location">
+            <button id="searchButton">Search</button>
+        </div>
+        <div class="weather-info">
+            <h2>Current Weather</h2>
+            <div id="weatherData">
+                <!-- Weather data will be displayed here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Add your JavaScript code here
+        const apiKey = 'd3152b20cbd5248afb0099b652d47064'; // Replace with your API key
+        const weatherData = document.getElementById('weatherData');
+        const locationInput = document.getElementById('locationInput');
+        const searchButton = document.getElementById('searchButton');
+
+        searchButton.addEventListener('click', () => {
+            const location = locationInput.value;
+            if (location.trim() !== '') {
+                fetchWeatherData(location);
+            }
+        });
+
+        async function fetchWeatherData(location) {
+            try {
+                const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${apiKey}&units=metric`);
+                const data = await response.json();
+
+                if (data.cod === 200) {
+                    displayWeatherData(data);
+                } else {
+                    weatherData.innerHTML = `<p>Error: ${data.message}</p>`;
+                }
+            } catch (error) {
+                console.error('Error fetching weather data:', error);
+                weatherData.innerHTML = `<p>Unable to fetch weather data</p>`;
+            }
+        }
+
+        function displayWeatherData(data) {
+            const { name, weather, main } = data;
+            const temperature = main.temp;
+            const conditions = weather[0].description;
+
+            const html = `
+                <p>Location: ${name}</p>
+                <p>Temperature: ${temperature}°C</p>
+                <p>Conditions: ${conditions}</p>
+            `;
+            weatherData.innerHTML = html;
+        }
+    </script>
+</body>
+</html>
